@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet # StatefulSet is used to manage stateful applications like databases
+metadata:
+  name: postgres-db
+spec:
+  serviceName: song-db
+  replicas: 1
+  selector:
+    matchLabels: # Select the Pods using the labels
+      app: postgres
+  template: # Pod template
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      volumes:
+      - name: db-init-scripts
+        configMap: # The contents of the ConfigMap fields will be presented as files using the keys as the file names
+          name: db-init-scripts-config
+      containers:
+      - name: postgres
+        image: postgres:latest
+        env: 
+        # get database name from the ConfigMap and set it as an environment variable
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_NAME
+        # get the username and password from the Secrets and set them as environment variables
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: DB_PASSWORD
+        
+        volumeMounts: # mount the ConfigMap as a volume to the container
+        - name: db-init-scripts
+          mountPath: /docker-entrypoint-initdb.d # postgres image will run all scripts in this directory
+
+        startupProbe:
+          exec:
+            command:
+            - bash
+            - "-c"
+            - "pg_isready -h localhost"
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          failureThreshold: 2
+
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          failureThreshold: 2
+
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - "-c"
+            - "psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1'"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+
+
+
+
