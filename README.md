@@ -36,26 +36,45 @@ alias kubectl="minikube kubectl --"
 ## Deploy
 
 ```bash
+#namespace
+kubectl create namespace my-namespace
 
-kubectl apply -f db-config.yaml
-kubectl apply -f db-init-scripts-config.yaml
-kubectl apply -f db-secrets.yaml
-kubectl apply -f db-deployment.yaml
-kubectl apply -f db-service.yaml
+#user config and secrets
+kubectl apply -f ./user-app-config.yaml
+kubectl apply -f ./user-db-config.yaml
+kubectl apply -f ./user-db-secrets.yaml
+kubectl apply -f ./user-db-init-scripts-config.yaml
 
-kubectl apply -f app-config.yaml
-kubectl apply -f app-deployment.yaml
-kubectl apply -f app-service.yaml
+#user api
+kubectl apply -f ./user-app-deployment.yaml
+kubectl apply -f ./user-app-service.yaml
 
+#user database
+kubectl apply -f ./user-db-statefulset.yaml
+kubectl apply -f ./user-db-service.yaml
 
+#post config and secrets
+kubectl apply -f ./post-app-config.yaml
+kubectl apply -f ./post-db-config.yaml
+kubectl apply -f ./post-db-secrets.yaml
+kubectl apply -f ./post-db-init-scripts-config.yaml
+
+#post api
+kubectl apply -f ./post-app-deployment.yaml
+kubectl apply -f ./post-app-service.yaml
+
+#post database
+kubectl apply -f ./post-db-statefulset.yaml
+kubectl apply -f ./post-db-service.yaml
 ```
 
 ## Verify Deployment
 
 ```bash
-kubectl get all
-kubectl get deployments
-kubectl get pods
+kubectl get all -n my-namespace
+
+kubectl get deployments -n my-namespace
+kubectl get pods -n my-namespace
 
 ```
 
@@ -111,3 +130,6 @@ kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="Rolled back t
 ```bash
 kubectl rollout history deployment/nodejs-app
 ```
+
+
+user-database.my-namespace.svc.cluster.local

@@ -1,9 +1,10 @@
 apiVersion: v1 
 kind: ConfigMap
 metadata:
-  name: app-config
+  name: post-app-config
   namespace: my-namespace
 data: # store environment variables for application deployments.
   NODE_ENV: "production"
-  DB_HOST: "song-db"
+  DB_HOST: "post-database"
   DB_PORT: "5432"
+  USER_SERVICE_PORT: "3000"

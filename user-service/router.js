@@ -119,4 +119,19 @@ router.patch('/users/:id', async (req, res) => {
     }
   });
 
+  // GET /startup-check (Check if the server is running)
+router.get('/startup-check', (req, res) => {
+  res.status(200).json({ message: 'Server is running' });
+});
+
+// GET /health (Check the health of the server)
+router.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
+// GET /ready (Check if the server is ready to handle requests)
+router.get('/ready', (req, res) => {
+  res.status(200).json({ status: 'ready' });
+});
+
 module.exports = router;

@@ -1,43 +1,43 @@
 apiVersion: apps/v1
 kind: StatefulSet # StatefulSet is used to manage stateful applications like databases
 metadata:
-  name: postgres-db
+  name: user-postgres-statefulset
   namespace: my-namespace
 spec:
-  serviceName: song-db
+  serviceName: user-database
   replicas: 1
   selector:
     matchLabels: # Select the Pods using the labels
-      app: postgres
+      app: user-postgres-db
   template: # Pod template
     metadata:
       labels:
-        app: postgres
+        app: user-postgres-db
     spec:
       volumes:
       - name: db-init-scripts
         configMap: # The contents of the ConfigMap fields will be presented as files using the keys as the file names
-          name: db-init-scripts-config
+          name: user-db-init-scripts-config
       containers:
-      - name: postgres
+      - name: user-postgres-db
         image: postgres:latest
         env: 
         # get database name from the ConfigMap and set it as an environment variable
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:
-              name: db-config
+              name: user-db-config
               key: DB_NAME
         # get the username and password from the Secrets and set them as environment variables
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: db-secrets
+              name: user-db-secrets
               key: DB_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-secrets
+              name: user-db-secrets
               key: DB_PASSWORD
         
         volumeMounts: # mount the ConfigMap as a volume to the container

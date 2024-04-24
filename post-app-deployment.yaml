@@ -1,10 +1,10 @@
 apiVersion: apps/v1 
 kind: Deployment # Deployment is used to manage stateless applications
 metadata:
-  name: nodejs-app
+  name: post-app
   namespace: my-namespace
   labels:
-        app: nodejs
+        app: post-api
 spec:
   replicas: 2
   strategy:
@@ -14,15 +14,15 @@ spec:
       maxSurge: 1 # maximum number of Pods that can be created over the desired number of Pods
   selector:
     matchLabels:
-      app: nodejs
+      app: post-api
   template:
     metadata:
       labels:
-        app: nodejs
+        app: post-api
     spec:
       containers:
-      - name: nodejs
-        image: udnboss/song-service:v1.0.0
+      - name: post-api
+        image: udnboss/post-service:v1.0.0
         imagePullPolicy: Always
         ports:
         - name: http
@@ -40,24 +40,29 @@ spec:
         - name: NODE_ENV
           valueFrom:
             configMapKeyRef:
-              name: app-config
+              name: post-app-config
               key: NODE_ENV
         - name: DB_NAME
           valueFrom:
             configMapKeyRef:
-              name: db-config
+              name: post-db-config
               key: DB_NAME
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
-              name: app-config
+              name: post-app-config
               key: DB_HOST
         - name: DB_PORT
           valueFrom:
             configMapKeyRef:
-              name: app-config
+              name: post-app-config
               key: DB_PORT
-        
+        - name: USER_SERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: post-app-config
+              key: USER_SERVICE_PORT
+       
         # Add environment variables from Secret
         - name: DB_USER
           valueFrom:
