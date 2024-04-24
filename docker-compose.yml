@@ -1,18 +1,41 @@
 services:
-  song-service:
-    image: udnboss/song-service
+  user-service:
+    image: udnboss/user-service:v1.0.0
     ports:
       - 3000:3000
     environment:
       - NODE_ENV=production
-      - DB_HOST=song-database
+      - DB_HOST=user-database
       - DB_NAME=$DB_NAME
       - DB_USER=$DB_USER
       - DB_PASSWORD=$DB_PASSWORD
 
-  song-database:
-    image: udnboss/song-database
+  user-database:
+    image: postgres:latest
     environment:
       - POSTGRES_DB=$DB_NAME
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
+    volumes:
+      - ./user-database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  post-service:
+    image: udnboss/post-service:v1.0.0
+    ports:
+      - 3001:3001
+    environment:
+      - NODE_ENV=production
+      - USER_SERVICE_PORT=3000
+      - DB_HOST=post-database
+      - DB_NAME=$DB_NAME
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+
+  post-database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    volumes:
+      - ./post-database/init.sql:/docker-entrypoint-initdb.d/init.sql

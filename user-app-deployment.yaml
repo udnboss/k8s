@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment # Deployment is used to manage stateless applications
 metadata:
   name: nodejs-app
+  namespace: my-namespace
   labels:
         app: nodejs
 spec:

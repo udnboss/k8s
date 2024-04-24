@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet # StatefulSet is used to manage stateful applications like databases
 metadata:
   name: postgres-db
+  namespace: my-namespace
 spec:
   serviceName: song-db
   replicas: 1

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nodejs-app-service  # Name for your service
+  namespace: my-namespace
 spec:
   selector:
     app: nodejs  # Matches the label in your deployment
