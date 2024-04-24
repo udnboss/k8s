@@ -6,14 +6,15 @@ services:
     environment:
       - NODE_ENV=production
       - DB_HOST=user-database
-      - DB_NAME=$DB_NAME
+      - DB_NAME=$USER_DB_NAME
+      - DB_PORT=5432
       - DB_USER=$DB_USER
       - DB_PASSWORD=$DB_PASSWORD
 
   user-database:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_DB=$USER_DB_NAME
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
     volumes:
@@ -22,19 +23,20 @@ services:
   post-service:
     image: udnboss/post-service:v1.0.0
     ports:
-      - 3001:3001
+      - 3001:3000
     environment:
       - NODE_ENV=production
       - USER_SERVICE_PORT=3000
       - DB_HOST=post-database
-      - DB_NAME=$DB_NAME
+      - DB_NAME=$POST_DB_NAME
+      - DB_PORT=5432
       - DB_USER=$DB_USER
       - DB_PASSWORD=$DB_PASSWORD
 
   post-database:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_DB=$POST_DB_NAME
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
     volumes:

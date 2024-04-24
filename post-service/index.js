@@ -5,8 +5,28 @@ const router = require('./router'); // Assuming the router is in a file named ro
 app.use(express.json()); // for parsing application/json
 app.use('/', router);
 
-const port = process.env.PORT;
-const mongoUri = process.env.MONGO_URI;
-const songServiceUrl = process.env.SONG_SERVICE_URL;
+// Add the logging middleware
+app.use((req, res, next) => {
+    res.on('finish', () => {
+      console.log(`${req.method} ${res.statusCode} ${req.path}`);
+    });
+    next();
+});
 
-app.listen(port, () => console.log(`Listening on port ${port}... mongo URI: ${mongoUri}, song service URL: ${songServiceUrl}`));
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+const port = 3000;
+const host = '0.0.0.0'; // Listen on all IP addresses
+
+app.listen(port, host, () => console.log(`
+Post API: Server Listening on ${host}:${port}... 
+NODE_ENV: ${process.env.NODE_ENV} 
+USER_SERVICE_PORT: ${process.env.USER_SERVICE_PORT} 
+DB_HOST: ${process.env.DB_HOST}
+DB_PORT: ${process.env.DB_PORT}
+DB_NAME: ${process.env.DB_NAME}
+`));

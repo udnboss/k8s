@@ -1,15 +1,20 @@
 
 ## Build and publish docker images
 ```bash
-docker build -t udnboss/song-database:latest ./song-database
-docker push udnboss/song-database:latest
+docker build -t udnboss/user-service:v1.0.0 ./song-service
+docker push udnboss/user-service:v1.0.0
 
-docker build -t udnboss/song-service:v1.0.0 ./song-service
-docker push udnboss/song-service:v1.0.0
+docker build -t udnboss/post-service:v1.0.0 ./post-service
+docker push udnboss/post-service:v1.0.0
 
 #upgraded version of service
-docker build -t udnboss/song-service:v1.0.1 ./song-service
-docker push udnboss/song-service:v1.0.1
+docker build -t udnboss/user-service:v1.0.1 ./user-service
+docker push udnboss/user-service:v1.0.1
+```
+
+## Test using docker compose
+```bash
+docker compose up -d
 ```
 
 ## Install Minikube
