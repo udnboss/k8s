@@ -19,13 +19,13 @@ router.post('/songs', async (req, res) => {
 
 // GET /songs
 router.get('/songs', async (req, res) => {
-    const result = await pool.query('SELECT * FROM songs');
+    const result = await pool.query(`SELECT *, 'classic' as genre FROM songs`);
     res.status(200).send(result.rows);
 });
 
 // GET /songs/{id}
 router.get('/songs/:id', async (req, res) => {
-    const result = await pool.query('SELECT * FROM songs where id = $1', [req.params.id]);
+    const result = await pool.query(`SELECT *, 'classic' as genre FROM songs where id = $1`, [req.params.id]);
     if (result.rows.length == 0) return res.status(404).send('The song metadata with the specified id does not exist');
     res.status(200).send(result.rows[0]);
 });

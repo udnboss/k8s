@@ -36,6 +36,7 @@ kubectl apply -f db-config.yaml
 kubectl apply -f db-init-scripts-config.yaml
 kubectl apply -f db-secrets.yaml
 kubectl apply -f db-deployment.yaml
+kubectl apply -f db-service.yaml
 
 kubectl apply -f app-config.yaml
 kubectl apply -f app-deployment.yaml
@@ -69,7 +70,8 @@ kubectl delete statefulset postgres-db
 kubectl describe pod nodejs-app-7d5cb69789-7569b
 kubectl logs nodejs-app-7d5cb69789-7569b
 
-kubectl describe service nodejs-app-service
+kubectl describe service/nodejs-app-service
+kubectl describe service/song-db
 
 kubectl describe statefulset postgres-db
 kubectl logs postgres-db-0
@@ -86,7 +88,8 @@ kubectl scale --replicas=1 deployment/nodejs-app
 # Rolling Update
 ```bash
 kubectl set image deployment/nodejs-app nodejs=udnboss/song-service:v1.0.1
-kubectl apply -f app-deployment.yaml
+kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="image updated to udnboss/song-service:v1.0.1"
+
 # monitor the progress
 kubectl rollout status deployment/nodejs-app
 
@@ -94,6 +97,12 @@ kubectl rollout status deployment/nodejs-app
 
 # Rollback the Update
 ```bash
-kubectl rollout undo deployment/nodejs-app
+kubectl rollout undo deployment/nodejs-app --to-revision=1
+kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="Rolled back to revision 1"
 
+```
+
+# Deployment history
+```bash
+kubectl rollout history deployment/nodejs-app
 ```
