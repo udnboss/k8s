@@ -4,8 +4,11 @@ metadata:
   name: user-database
   namespace: my-namespace
 spec:
-  ports:
-  - port: 5432
-  clusterIP: None
+  type: NodePort  # Exposes the service on all nodes' IP addresses with a random port
   selector:
-    app: user-postgres
+    app: user-postgres-db
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+  

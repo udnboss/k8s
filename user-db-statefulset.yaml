@@ -18,9 +18,15 @@ spec:
       - name: db-init-scripts
         configMap: # The contents of the ConfigMap fields will be presented as files using the keys as the file names
           name: user-db-init-scripts-config
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
       containers:
       - name: user-postgres-db
-        image: postgres:latest
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+          name: postgres
         env: 
         # get database name from the ConfigMap and set it as an environment variable
         - name: POSTGRES_DB
@@ -29,6 +35,11 @@ spec:
               name: user-db-config
               key: DB_NAME
         # get the username and password from the Secrets and set them as environment variables
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: user-db-secrets
+              key: DB_USER
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
@@ -43,13 +54,14 @@ spec:
         volumeMounts: # mount the ConfigMap as a volume to the container
         - name: db-init-scripts
           mountPath: /docker-entrypoint-initdb.d # postgres image will run all scripts in this directory
-
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
         startupProbe:
           exec:
             command:
             - bash
             - "-c"
-            - "pg_isready -h localhost"
+            - "pg_isready -h localhost -d ${POSTGRES_DB} -U ${POSTGRES_USER}"
           initialDelaySeconds: 15
           periodSeconds: 20
           failureThreshold: 2
@@ -66,7 +78,7 @@ spec:
             command:
             - bash
             - "-c"
-            - "psql -U $POSTGRES_USER -d $POSTGRES_DB -c 'SELECT 1'"
+            - "psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'SELECT 1'"
           initialDelaySeconds: 5
           periodSeconds: 10
           failureThreshold: 3

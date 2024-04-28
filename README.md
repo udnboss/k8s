@@ -1,7 +1,7 @@
 
 ## Build and publish docker images
 ```bash
-docker build -t udnboss/user-service:v1.0.0 ./song-service
+docker build -t udnboss/user-service:v1.0.0 ./user-service
 docker push udnboss/user-service:v1.0.0
 
 docker build -t udnboss/post-service:v1.0.0 ./post-service
@@ -40,32 +40,32 @@ alias kubectl="minikube kubectl --"
 kubectl create namespace my-namespace
 
 #user config and secrets
-kubectl apply -f ./user-app-config.yaml
-kubectl apply -f ./user-db-config.yaml
-kubectl apply -f ./user-db-secrets.yaml
-kubectl apply -f ./user-db-init-scripts-config.yaml
+kubectl -n my-namespace apply -f ./user-app-config.yaml
+kubectl -n my-namespace apply -f ./user-db-config.yaml
+kubectl -n my-namespace apply -f ./user-db-secrets.yaml
+kubectl -n my-namespace apply -f ./user-db-init-scripts-config.yaml
 
 #user api
-kubectl apply -f ./user-app-deployment.yaml
-kubectl apply -f ./user-app-service.yaml
+kubectl -n my-namespace apply -f ./user-app-deployment.yaml
+kubectl -n my-namespace apply -f ./user-app-service.yaml
 
 #user database
-kubectl apply -f ./user-db-statefulset.yaml
-kubectl apply -f ./user-db-service.yaml
+kubectl -n my-namespace apply -f ./user-db-statefulset.yaml
+kubectl -n my-namespace apply -f ./user-db-service.yaml
 
 #post config and secrets
-kubectl apply -f ./post-app-config.yaml
-kubectl apply -f ./post-db-config.yaml
-kubectl apply -f ./post-db-secrets.yaml
-kubectl apply -f ./post-db-init-scripts-config.yaml
+kubectl -n my-namespace apply -f ./post-app-config.yaml
+kubectl -n my-namespace apply -f ./post-db-config.yaml
+kubectl -n my-namespace apply -f ./post-db-secrets.yaml
+kubectl -n my-namespace apply -f ./post-db-init-scripts-config.yaml
 
 #post api
-kubectl apply -f ./post-app-deployment.yaml
-kubectl apply -f ./post-app-service.yaml
+kubectl -n my-namespace apply -f ./post-app-deployment.yaml
+kubectl -n my-namespace apply -f ./post-app-service.yaml
 
 #post database
-kubectl apply -f ./post-db-statefulset.yaml
-kubectl apply -f ./post-db-service.yaml
+kubectl -n my-namespace apply -f ./post-db-statefulset.yaml
+kubectl -n my-namespace apply -f ./post-db-service.yaml
 ```
 
 ## Verify Deployment
@@ -80,55 +80,55 @@ kubectl get pods -n my-namespace
 
 # Delete Deployment
 ```bash
-kubectl delete deployment nodejs-app
+kubectl -n my-namespace delete deployment.apps/user-app-deployment
 ```
 # Delete StatefulSet
 ```bash
-kubectl delete statefulset postgres-db
+kubectl -n my-namespace delete statefulset.apps/user-postgres-statefulset
 
 ```
 
 # Status
 
 ```bash
-kubectl describe pod nodejs-app-7d5cb69789-7569b
-kubectl logs nodejs-app-7d5cb69789-7569b
+kubectl describe pod nodejs-app-7d5cb69789-7569b -n my-namespace
+kubectl logs nodejs-app-7d5cb69789-7569b -n my-namespace
 
-kubectl describe service/nodejs-app-service
-kubectl describe service/song-db
+kubectl describe service/nodejs-app-service -n my-namespace
+kubectl describe service/song-db -n my-namespace
 
-kubectl describe statefulset postgres-db
-kubectl logs postgres-db-0
+kubectl describe statefulset postgres-db -n my-namespace
+kubectl logs postgres-db-0 -n my-namespace
 
 ```
 
 # Scale up or down
 
 ```bash
-kubectl scale --replicas=0 deployment/nodejs-app
-kubectl scale --replicas=1 deployment/nodejs-app
+kubectl scale --replicas=0 deployment/nodejs-app -n my-namespace
+kubectl scale --replicas=1 deployment/nodejs-app -n my-namespace
 ```
 
 # Rolling Update
 ```bash
-kubectl set image deployment/nodejs-app nodejs=udnboss/song-service:v1.0.1
-kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="image updated to udnboss/song-service:v1.0.1"
+kubectl set image deployment/nodejs-app nodejs=udnboss/song-service:v1.0.1 -n my-namespace
+kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="image updated to udnboss/song-service:v1.0.1" -n my-namespace
 
 # monitor the progress
-kubectl rollout status deployment/nodejs-app
+kubectl rollout status deployment/nodejs-app -n my-namespace
 
 ```
 
 # Rollback the Update
 ```bash
-kubectl rollout undo deployment/nodejs-app --to-revision=1
-kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="Rolled back to revision 1"
+kubectl rollout undo deployment/nodejs-app --to-revision=1 -n my-namespace
+kubectl annotate deployment/nodejs-app kubernetes.io/change-cause="Rolled back to revision 1" -n my-namespace
 
 ```
 
 # Deployment history
 ```bash
-kubectl rollout history deployment/nodejs-app
+kubectl rollout history deployment/nodejs-app -n my-namespace
 ```
 
 
