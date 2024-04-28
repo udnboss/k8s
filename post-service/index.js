@@ -23,10 +23,13 @@ const port = 3000;
 const host = '0.0.0.0'; // Listen on all IP addresses
 
 app.listen(port, host, () => console.log(`
-Post API: Server Listening on ${host}:${port}... 
+Post Server Listening on ${host}:${port}... 
 NODE_ENV: ${process.env.NODE_ENV} 
-USER_SERVICE_PORT: ${process.env.USER_SERVICE_PORT} 
+USER_SERVICE_HOST: ${process.env.USER_SERVICE_HOST}
+USER_SERVICE_PORT: ${process.env.USER_SERVICE_PORT}
 DB_HOST: ${process.env.DB_HOST}
 DB_PORT: ${process.env.DB_PORT}
 DB_NAME: ${process.env.DB_NAME}
+DB_USER: ${process.env.DB_USER}
+DB_PASSWORD: ${process.env.DB_PASSWORD}
 `));

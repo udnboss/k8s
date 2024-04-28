@@ -50,6 +50,7 @@ kubectl -n my-namespace apply -f ./user-app-deployment.yaml
 kubectl -n my-namespace apply -f ./user-app-service.yaml
 
 #user database
+kubectl -n my-namespace apply -f ./user-db-volume.yaml
 kubectl -n my-namespace apply -f ./user-db-statefulset.yaml
 kubectl -n my-namespace apply -f ./user-db-service.yaml
 
@@ -64,6 +65,7 @@ kubectl -n my-namespace apply -f ./post-app-deployment.yaml
 kubectl -n my-namespace apply -f ./post-app-service.yaml
 
 #post database
+kubectl -n my-namespace apply -f ./post-db-volume.yaml
 kubectl -n my-namespace apply -f ./post-db-statefulset.yaml
 kubectl -n my-namespace apply -f ./post-db-service.yaml
 ```

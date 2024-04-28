@@ -20,7 +20,7 @@ spec:
           name: user-db-init-scripts-config
       - name: postgres-data
         persistentVolumeClaim:
-          claimName: postgres-pvc
+          claimName: user-postgres-pvc
       containers:
       - name: user-postgres-db
         image: postgres:16-alpine

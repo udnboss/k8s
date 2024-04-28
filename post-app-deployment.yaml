@@ -1,7 +1,7 @@
 apiVersion: apps/v1 
 kind: Deployment # Deployment is used to manage stateless applications
 metadata:
-  name: post-app
+  name: post-app-deployment
   namespace: my-namespace
   labels:
         app: post-api
@@ -67,12 +67,12 @@ spec:
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: db-secrets
+              name: post-db-secrets
               key: DB_USER
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-secrets
+              name: post-db-secrets
               key: DB_PASSWORD   
         
         startupProbe: # Add a startup probe to check if the app is done initializing

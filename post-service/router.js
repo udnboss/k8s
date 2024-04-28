@@ -53,7 +53,7 @@ router.post('/posts', async (req, res) => {
         const postData = JSON.stringify({ amountOfPosts: totalPosts });
 
         const options = {
-            hostname: 'user-service',
+            hostname: process.env.USER_SERVICE_HOST,
             port: process.env.USER_SERVICE_PORT,
             path: `/users/${authorId}`,
             method: 'PATCH',
